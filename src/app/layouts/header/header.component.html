@@ -1,1 +1,16 @@
-<p>header works!</p>
+<header>
+  <div class="container">
+    <div class="logo">
+      <img src="../../../assets/images/logo.jpeg" alt="migu-music" />
+      <h1>movies</h1>
+    </div>
+    <div class="user">
+      <a *ngIf="!user else context">请登录</a>
+      <ng-template #context>
+        {{user.name}},
+        <a>退出</a>
+      </ng-template>
+    </div>
+  </div>
+</header>
+
