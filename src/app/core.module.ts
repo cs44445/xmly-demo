@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { HeaderComponent } from './layouts/header/header.component';
+import { BreadcrumbModule } from './common/components/breadcrumb/breadcrumb.module';
 
 
 
@@ -15,12 +16,14 @@ import { HeaderComponent } from './layouts/header/header.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    CommonModule
+    CommonModule,
+    BreadcrumbModule
   ],
   exports: [//需要导出才能在app.module中正常使用
     BrowserModule,
     AppRoutingModule,
-    HeaderComponent
+    HeaderComponent,
+    BreadcrumbModule
   ]
 })
 export class CoreModule {

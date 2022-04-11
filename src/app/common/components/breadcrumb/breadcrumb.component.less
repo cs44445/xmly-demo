@@ -1,0 +1,18 @@
+.bread-crumb {
+  display: flex;
+  align-items: center;
+  color: #72727b;
+
+  //通过父组件设置子组件最后一个箭头不显示，同时需要在父组件中设置changeDetection: ChangeDetectionStrategy.OnPush
+  app-breadcrumb-item {
+    &:last-child {
+      .content {
+        color: rgba(0, 0, 0, 0.5);
+      }
+
+      .separator {
+        display: none;
+      }
+    }
+  }
+}
