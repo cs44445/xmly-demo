@@ -2,5 +2,9 @@
   <div class="content">
     <ng-content></ng-content>
   </div>
-  <span class="separator">></span>
+  <div class="separator">
+    <!-- 通过parent去获取父组件，这样就不需要在使用BreadcrumbItemComponent组件时每个都需要传入自定义模板，直接读取父组件模板即可 -->
+    <ng-container [ngTemplateOutlet]="parent.separatorContent || defaultSepratorTpl"></ng-container>
+    <ng-template #defaultSepratorTpl><span>&gt;</span></ng-template>
+  </div>
 </div>

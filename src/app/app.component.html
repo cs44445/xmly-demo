@@ -1,13 +1,21 @@
 <app-header></app-header>
-<app-breadcrumb>
-  <app-breadcrumb-item>
-    全部
-  </app-breadcrumb-item>
-  <app-breadcrumb-item>
-    一级
-  </app-breadcrumb-item>
-  <app-breadcrumb-item>
-    末级
-  </app-breadcrumb-item>
-</app-breadcrumb>
+<div class="content">
+  <div class="breadcrumb-wrap">
+    <!-- <app-breadcrumb [separatorContent]="mySeprator"> -->
+    <app-breadcrumb>
+      <app-breadcrumb-item>
+        全部
+      </app-breadcrumb-item>
+      <app-breadcrumb-item>
+        一级
+      </app-breadcrumb-item>
+      <app-breadcrumb-item>
+        末级
+      </app-breadcrumb-item>
+      <!-- 给面包屑传入自定义标签 -->
+      <ng-template #mySeprator><span>$$</span></ng-template>
+    </app-breadcrumb>
+  </div>
+</div>
+
 <router-outlet></router-outlet>
