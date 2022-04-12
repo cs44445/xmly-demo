@@ -17,7 +17,8 @@ import { BreadcrumbModule } from './common/components/breadcrumb/breadcrumb.modu
     BrowserModule,
     AppRoutingModule,
     CommonModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    // DirectivesModule
   ],
   exports: [//需要导出才能在app.module中正常使用
     BrowserModule,

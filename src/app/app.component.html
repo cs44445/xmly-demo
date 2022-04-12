@@ -1,7 +1,9 @@
 <app-header></app-header>
 <div class="content">
   <div class="breadcrumb-wrap">
+    <!-- 可以传字符串或者模板 -->
     <!-- <app-breadcrumb [separatorContent]="mySeprator"> -->
+    <!-- <app-breadcrumb [separatorContent]="'***'"> -->
     <app-breadcrumb>
       <app-breadcrumb-item>
         全部
@@ -13,7 +15,12 @@
         末级
       </app-breadcrumb-item>
       <!-- 给面包屑传入自定义标签 -->
-      <ng-template #mySeprator><span>$$</span></ng-template>
+      <!-- <ng-template #mySeprator><span>$$</span></ng-template> -->
+      <!-- let-name没有赋值就会使用默认定义好的值:world -->
+      <ng-template #mySeprator let-name let-my="tttt">
+        <span>$$-{{name}}-{{my}}</span>
+        <span></span>
+      </ng-template>
     </app-breadcrumb>
   </div>
 </div>

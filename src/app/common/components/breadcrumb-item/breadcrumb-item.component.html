@@ -4,7 +4,14 @@
   </div>
   <div class="separator">
     <!-- 通过parent去获取父组件，这样就不需要在使用BreadcrumbItemComponent组件时每个都需要传入自定义模板，直接读取父组件模板即可 -->
-    <ng-container [ngTemplateOutlet]="parent.separatorContent || defaultSepratorTpl"></ng-container>
-    <ng-template #defaultSepratorTpl><span>&gt;</span></ng-template>
+    <!-- 只能传入字符串 -->
+    <!-- <ng-container [ngTemplateOutlet]="parent.separatorContent || defaultSepratorTpl"></ng-container>
+    <ng-template #defaultSepratorTpl><span>&gt;</span></ng-template> -->
+
+    <!-- 可以传字符串或模板 如果传入的是字符串，就会使用花括号中的parent.separatorContent，如果传入模板，就会走appStrTpOutlet的逻辑 -->
+    <!-- <span *appStrTpOutlet="parent.separatorContent; context:myContext">{{parent.separatorContent}}</span> -->
+
+    <!-- 添加上下文 -->
+    <span *appStrTpOutlet="parent.separatorContent; context:myContext">{{parent.separatorContent}}</span>
   </div>
 </div>
