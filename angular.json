@@ -97,7 +97,8 @@
               "browserTarget": "xmly-demo:build:production"
             },
             "development": {
-              "browserTarget": "xmly-demo:build:development"
+              "browserTarget": "xmly-demo:build:development",
+              "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

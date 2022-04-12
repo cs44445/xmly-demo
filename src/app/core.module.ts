@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { HeaderComponent } from './layouts/header/header.component';
 import { BreadcrumbModule } from './common/components/breadcrumb/breadcrumb.module';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -18,7 +19,7 @@ import { BreadcrumbModule } from './common/components/breadcrumb/breadcrumb.modu
     AppRoutingModule,
     CommonModule,
     BreadcrumbModule,
-    // DirectivesModule
+    HttpClientModule
   ],
   exports: [//需要导出才能在app.module中正常使用
     BrowserModule,
