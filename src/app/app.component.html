@@ -1,27 +1,26 @@
 <app-header></app-header>
 <div class="content">
-  <div class="breadcrumb-wrap">
-    <!-- 可以传字符串或者模板 -->
-    <!-- <app-breadcrumb [separatorContent]="mySeprator"> -->
-    <!-- <app-breadcrumb [separatorContent]="'***'"> -->
-    <app-breadcrumb>
-      <app-breadcrumb-item>
-        全部
-      </app-breadcrumb-item>
-      <app-breadcrumb-item>
-        一级
-      </app-breadcrumb-item>
-      <app-breadcrumb-item>
-        末级
-      </app-breadcrumb-item>
-      <!-- 给面包屑传入自定义标签 -->
-      <!-- <ng-template #mySeprator><span>$$</span></ng-template> -->
-      <!-- let-name没有赋值就会使用默认定义好的值:world -->
-      <ng-template #mySeprator let-name let-my="tttt">
-        <span>$$-{{name}}-{{my}}</span>
-        <span></span>
-      </ng-template>
-    </app-breadcrumb>
+  <div class="container">
+    <div class="breadcrumb-wrap">
+      <app-breadcrumb>
+        <app-breadcrumb-item>全部分类</app-breadcrumb-item>
+        <app-breadcrumb-item>
+          <div class="sub-category">
+            <div class="handler">
+              <!-- 需要加?变成可选参数，因为请求接口需要时间，但模板早已经渲染好了，所以不加?会报错 -->
+              <span class="current">{{currentCategory?.displayName}}</span>
+              <i class="arrow"></i>
+            </div>
+            <div class="category-box">
+              <ul>
+                <li (click)="changeCategory(item)" [class.checked]="item.id === currentCategory?.id"
+                  *ngFor="let item of categories;">{{item.displayName}}</li>
+              </ul>
+            </div>
+          </div>
+        </app-breadcrumb-item>
+      </app-breadcrumb>
+    </div>
   </div>
 </div>
 
