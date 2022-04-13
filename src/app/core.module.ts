@@ -6,6 +6,7 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { HeaderComponent } from './layouts/header/header.component';
 import { BreadcrumbModule } from './common/components/breadcrumb/breadcrumb.module';
 import { HttpClientModule } from '@angular/common/http';
+import { PagesModule } from './pages/pages.module';
 
 
 
@@ -19,13 +20,15 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     CommonModule,
     BreadcrumbModule,
-    HttpClientModule
+    HttpClientModule,
+    PagesModule
   ],
   exports: [//需要导出才能在app.module中正常使用
     BrowserModule,
     AppRoutingModule,
     HeaderComponent,
-    BreadcrumbModule
+    BreadcrumbModule,
+    PagesModule
   ]
 })
 export class CoreModule {
