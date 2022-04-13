@@ -28,6 +28,7 @@ export class AlbumsComponent implements OnInit {
   private updateDate(): void {
     this.albumServe.detailCategoryPageInfo(this.searchParms).subscribe(res => {
       this.categoryInfo = res
+      console.log(this.categoryInfo,'this.categoryInfo');
       this.cdr.markForCheck()
     })
   }

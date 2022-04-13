@@ -21,7 +21,7 @@ export interface SubCategory {
 export interface MetaValue {
   id: number,
   code: string,
-  display: string
+  displayName: string
 }
 export interface MetaData {
   id: number,

@@ -23,7 +23,6 @@ export class AppComponent implements OnInit {
 
   private getAlbumData(): void {
     this.albumServe.categories().subscribe(res => {
-      console.log(res);
       this.categories = res
       this.currentCategory = this.categories.find(item => item.pinyin === this.categoryPinyin)
       this.cdr.markForCheck()
