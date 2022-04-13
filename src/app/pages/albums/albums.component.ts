@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { AlbumService } from 'src/app/services/apis/album.service';
-import { AlbumArgs, CategoryInfo } from 'src/app/services/type';
+import { AlbumArgs, CategoryInfo, MetaValue, SubCategory } from 'src/app/services/type';
 
 @Component({
   selector: 'app-albums',
@@ -9,7 +9,7 @@ import { AlbumArgs, CategoryInfo } from 'src/app/services/type';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AlbumsComponent implements OnInit {
-  searchParms: AlbumArgs = {
+  searchParams: AlbumArgs = {
     category: 'youshengshu',
     subcategory: '',
     meta: '',
@@ -26,10 +26,19 @@ export class AlbumsComponent implements OnInit {
   }
 
   private updateDate(): void {
-    this.albumServe.detailCategoryPageInfo(this.searchParms).subscribe(res => {
+    this.albumServe.detailCategoryPageInfo(this.searchParams).subscribe(res => {
       this.categoryInfo = res
-      console.log(this.categoryInfo,'this.categoryInfo');
       this.cdr.markForCheck()
     })
   }
+
+  changeSubCategory(subcategories?: SubCategory): void {
+    if (this.searchParams.subcategory !== subcategories?.code) {
+      this.searchParams.subcategory = subcategories?.code || ''
+      this.updateDate()
+    }
+  }
+  // 在ngFor中添加travkBy：因为点击事件很平凡，使用trackBy可以优化 https://angular.cn/api/common/NgForOf
+  trackBySubcategories(index: number, item: SubCategory): string { return item.code }
+  trackByMetas(index: number, item: MetaValue): number { return item.id }
 }
