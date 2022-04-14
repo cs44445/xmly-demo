@@ -19,7 +19,10 @@ export class AlbumsComponent implements OnInit {
   }
   categoryInfo?: CategoryInfo
 
-  constructor(private albumServe: AlbumService, private cdr: ChangeDetectorRef) { }
+  constructor(
+    private albumServe: AlbumService,
+    private cdr: ChangeDetectorRef,
+  ) { }
 
   ngOnInit(): void {
     this.updateDate()
