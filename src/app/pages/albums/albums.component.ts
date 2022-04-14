@@ -1,5 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest } from 'rxjs';
 import { AlbumService } from 'src/app/services/apis/album.service';
+import { CategoryService } from 'src/app/services/business/category.service';
 import { AlbumArgs, CategoryInfo, MetaValue, SubCategory } from 'src/app/services/type';
 
 @Component({
@@ -10,7 +13,7 @@ import { AlbumArgs, CategoryInfo, MetaValue, SubCategory } from 'src/app/service
 })
 export class AlbumsComponent implements OnInit {
   searchParams: AlbumArgs = {
-    category: 'youshengshu',
+    category: '',
     subcategory: '',
     meta: '',
     sort: 0,
@@ -22,10 +25,35 @@ export class AlbumsComponent implements OnInit {
   constructor(
     private albumServe: AlbumService,
     private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private categoryServe: CategoryService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.updateDate()
+    // 获取路由参数
+    // this.route.paramMap.subscribe(paramMap => {
+    //   const pinyin = paramMap.get('pinyin')
+    //   this.searchParams.category= pinyin!
+    //   console.log(this.searchParams.category,'');
+    // })
+
+    // 将一级菜单面包屑与路由参数交互相关联
+    combineLatest(//combineLatest合并多个流
+      this.categoryServe.getCategory(),
+      this.route.paramMap
+    ).subscribe(([category, paramMap]) => {
+      const pinyin = paramMap.get('pinyin')
+      if (pinyin === category) {
+        this.searchParams.category = pinyin
+        this.searchParams.subcategory=''
+        this.updateDate()
+      } else {
+        // 分类和路径的参数不同时(eg: 点击后退按钮)以参数为准 
+        this.categoryServe.setCategory(pinyin!)
+        this.router.navigateByUrl('/albums/' + pinyin)
+      }
+    })
   }
 
   private updateDate(): void {
