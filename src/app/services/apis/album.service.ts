@@ -25,9 +25,11 @@ export class AlbumService {
 
   // 二三级分类 Pick表示选出其中的两个参数:category、subcategory因为专辑列表的接口和分类列表的接口有这两个共同的参数
   detailCategoryPageInfo(args: Pick<AlbumArgs, 'category' | 'subcategory'>): Observable<CategoryInfo> {
-    const params = new HttpParams({ fromString: stringify(args) })//将参数转为a=x&b=y的格式
+    //因为这里传的是一个对象，所以不需要stringify(args将参数转为a=x&b=y的格式,请求的时候会自动转的
+    // const params = new HttpParams({ fromString: stringify(args) })
     return this.http
-      .get<Base<CategoryInfo>>(`${this.baseUrl}categories`, { params })
+      // .get<Base<CategoryInfo>>(`${this.baseUrl}categories`, { params })
+      .get<Base<CategoryInfo>>(`${this.baseUrl}categories`, { params: args })
       .pipe(map(res => res.data))
   }
 }
