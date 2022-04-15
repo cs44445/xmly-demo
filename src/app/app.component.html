@@ -13,6 +13,7 @@
             </div>
             <div class="category-box">
               <ul>
+                <!-- 点击一级菜单面包屑 -->
                 <li (click)="changeCategory(item)" [class.checked]="item.id === currentCategory?.id"
                   *ngFor="let item of categories;">{{item.displayName}}</li>
               </ul>

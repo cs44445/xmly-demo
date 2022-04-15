@@ -65,6 +65,7 @@ export class AlbumsComponent implements OnInit {
         }
         this.searchParams.category = pinyin!
         this.searchParams.subcategory = ''
+        this.categoryServe.setSubCategory([])//点击了二级菜单后重新点击一级菜单需要清空二级菜单
         this.updateDate()
       })
   }
