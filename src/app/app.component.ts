@@ -36,14 +36,13 @@ export class AppComponent implements OnInit {
     ).subscribe(([category, subCategory]) => {
       if (category !== this.categoryPinyin) {
         this.categoryPinyin = category
-        if (!this.categories.length) {//如果没有数据就发送一次请求，这样触发订阅时就不会重复请求，这样切换一级面包屑分类时不会调接口了
-          this.getAlbumData()
-        } else {
+        if (this.categories.length) {
           this.setCurrentCategory()//多次点击一级菜单面包屑后再次回退时，面包屑的标签需要与浏览器地址栏保持一致
         }
       }
       this.subCategory = subCategory
     })
+    this.getAlbumData()//获取面包屑的数据只在初始化的时候调用一次，不用subscribe中，否则初始化的时候会调用两次
   }
 
   private getAlbumData(): void {
@@ -57,7 +56,7 @@ export class AppComponent implements OnInit {
   // 使得当前的分类变成点击的分类
   changeCategory(category: Category): void {
     if ((this.currentCategory && this.currentCategory.id) !== category.id) {
-      this.currentCategory = category;
+      // this.currentCategory = category;//因为上面已经调用了setCurrentCategory()，所以不需要这行代码了
       this.categoryServe.setCategory(category.pinyin)//如果发生改变就往服务中设置值
       this.router.navigateByUrl(`albums/${category.pinyin}`)
     }
