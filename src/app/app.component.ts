@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { combineLatest } from 'rxjs';
 import { AlbumService } from './services/apis/album.service';
 import { CategoryService } from './services/business/category.service';
 import { Category } from './services/type';
@@ -28,15 +29,20 @@ export class AppComponent implements OnInit {
     this.init()
   }
   private init(): void {
-    this.categoryServe.getCategory().subscribe(data => {
-      if (data !== this.categoryPinyin) {
-        this.categoryPinyin = data
+    // 需要同时监听一级和二级导航
+    combineLatest(
+      this.categoryServe.getCategory(),
+      this.categoryServe.getSubCategory()
+    ).subscribe(([category, subCategory]) => {
+      if (category !== this.categoryPinyin) {
+        this.categoryPinyin = category
         if (!this.categories.length) {//如果没有数据就发送一次请求，这样触发订阅时就不会重复请求，这样切换一级面包屑分类时不会调接口了
           this.getAlbumData()
         } else {
           this.setCurrentCategory()//多次点击一级菜单面包屑后再次回退时，面包屑的标签需要与浏览器地址栏保持一致
         }
       }
+      this.subCategory = subCategory
     })
   }
 

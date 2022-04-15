@@ -79,6 +79,7 @@ export class AlbumsComponent implements OnInit {
   changeSubCategory(subcategories?: SubCategory): void {
     if (this.searchParams.subcategory !== subcategories?.code) {
       this.searchParams.subcategory = subcategories?.code || ''
+      this.categoryServe.setSubCategory([subcategories!.displayValue])//设置面包屑二级数据
       this.updateDate()
     }
   }

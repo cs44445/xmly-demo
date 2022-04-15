@@ -6,14 +6,23 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class CategoryService {
   private category$ = new BehaviorSubject<string>('youshengshu')
+  private subCategory$ = new BehaviorSubject<string[]>([])
 
   constructor() { }
 
-  setCategory(category: string): void{
+  setCategory(category: string): void {
     this.category$.next(category)
   }
 
-  getCategory(): Observable<string>{
+  getCategory(): Observable<string> {
     return this.category$.asObservable()
+  }
+
+  setSubCategory(subCategory: string[]): void {
+    this.subCategory$.next(subCategory)
+  }
+
+  getSubCategory(): Observable<string[]> {
+    return this.subCategory$.asObservable()
   }
 }
