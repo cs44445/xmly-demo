@@ -3,8 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, withLatestFrom } from 'rxjs';
 import { AlbumService } from 'src/app/services/apis/album.service';
 import { CategoryService } from 'src/app/services/business/category.service';
-import { AlbumArgs, CategoryInfo, MetaValue, SubCategory } from 'src/app/services/type';
-
+import { AlbumArgs, CategoryInfo, CheckedMeta, MetaData, MetaValue, SubCategory } from 'src/app/services/type';
 @Component({
   selector: 'app-albums',
   templateUrl: './albums.component.html',
@@ -21,6 +20,7 @@ export class AlbumsComponent implements OnInit {
     perPage: 30
   }
   categoryInfo?: CategoryInfo
+  checkedMetas: CheckedMeta[] = []
 
   constructor(
     private albumServe: AlbumService,
@@ -83,6 +83,41 @@ export class AlbumsComponent implements OnInit {
       this.categoryServe.setSubCategory([subcategories!.displayValue])//设置面包屑二级数据
       this.updateDate()
     }
+  }
+
+  changeMeta(metaData: MetaData, metaValue: MetaValue): void {
+    // console.log(metaData, '=====row');
+    // console.log(metaValue, 'meta');
+    this.checkedMetas.push({
+      metaRowId: metaData.id,
+      metaRowName: metaData.name,
+      metaId: metaValue.id,
+      metaName: metaValue.displayName
+    })
+  }
+
+  showMetaRow(name: string) {
+    if (this.checkedMetas.length) {
+      return this.checkedMetas.findIndex(item => item.metaRowName === name) === -1
+    }
+    return true
+  }
+
+  clearFilter(meta: CheckedMeta | 'clearAll') {
+    if (meta === 'clearAll') {
+      this.checkedMetas = []
+    } else {
+      const targetIndex = this.checkedMetas.findIndex(item => {
+        return (item.metaRowId === meta.metaRowId) && (item.metaId === meta.metaId)
+      })
+      if (targetIndex > -1) {
+        this.checkedMetas.splice(targetIndex, 1)
+      }   
+    }
+  }
+
+  clearAll() {
+
   }
 
   // 在ngFor中添加travkBy：因为点击事件很平凡，使用trackBy可以优化 https://angular.cn/api/common/NgForOf

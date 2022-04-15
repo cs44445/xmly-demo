@@ -44,3 +44,9 @@ export interface AlbumArgs {
   page: number;
   perPage: number;
 }
+export interface CheckedMeta {
+  metaRowId: number,
+  metaRowName: string,
+  metaId: number,
+  metaName: string
+}

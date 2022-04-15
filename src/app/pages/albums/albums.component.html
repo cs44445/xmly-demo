@@ -9,11 +9,27 @@
     </ul>
   </div>
   <div class="conditions">
-    <div class="row" *ngFor="let rows of categoryInfo?.metadata">
-      <b class="title">{{rows.displayName}}</b>
+    <ng-container  *ngFor="let rows of categoryInfo?.metadata">
+      <div class="row" *ngIf="showMetaRow(rows.name)">
+        <b class="title">{{rows.displayName}}</b>
+        <ul class="tabs">
+          <li class="tag" (click)="changeMeta(rows,row)" *ngFor="let row of rows?.metaValues;trackBy:trackByMetas">
+            {{row.displayName}}
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+
+    <!-- 筛选条件 -->
+    <div class="row checked-conditions" *ngIf="checkedMetas.length">
+      <b class="title">已筛选</b>
       <ul class="tabs">
-        <li class="tag" *ngFor="let row of rows?.metaValues;trackBy:trackByMetas">{{row.displayName}}</li>
+        <li class="tag" *ngFor="let item of checkedMetas" (click)="clearFilter(item)">
+          <span class="label-title">{{item.metaRowName}}</span> |
+          <span>{{item.metaName}}</span>
+        </li>
       </ul>
+      <a class="clear" (click)="clearFilter('clearAll')">清除全部</a>
     </div>
   </div>
   <div class="albums">
