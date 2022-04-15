@@ -55,7 +55,10 @@
             "styles": [
               "src/assets/styles/index.less"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "qs"
+            ]
           },
           "configurations": {
             "production": {

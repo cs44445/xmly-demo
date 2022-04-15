@@ -9,7 +9,7 @@
     </ul>
   </div>
   <div class="conditions">
-    <ng-container  *ngFor="let rows of categoryInfo?.metadata">
+    <ng-container *ngFor="let rows of categoryInfo?.metadata">
       <div class="row" *ngIf="showMetaRow(rows.name)">
         <b class="title">{{rows.displayName}}</b>
         <ul class="tabs">
@@ -33,6 +33,39 @@
     </div>
   </div>
   <div class="albums">
-    albums
+    <div class="album-head">
+      <div class="title">
+        <b>{{ albumsInfo?.pageConfig?.h1title }}</b>
+      </div>
+      <ul class="sort">
+        <li [class.checked]="i === searchParams.sort" *ngFor="let item of sorts; index as i" (click)="changeSort(i)">
+          {{item}}
+        </li>
+      </ul>
+    </div>
+    <div class="album-cards">
+      <div class="album-card" [routerLink]="'/album/' + album.albumId" *ngFor="let album of albumsInfo?.albums; trackBy: trackByAlbums">
+        <div class="cover">
+          <!--    图片地址加上!strip=1&quality=7&magick=webp&op_type=3&columns=290&rows=290，尺寸就会变为140 * 140      -->
+          <!-- album.coverPath 接口请求到的图片数据为: //imagev2.xmcdn.com/storages/b635-audiofreehighqps/F1/A4/GKwRIDoGKgV4AALQAAE6A9KP.jpg!op_type=0&magick=webp&unlimited=0,
+            但目前官网中的地址需要截取去掉!op_type=0&magick=webp&unlimited=0再拼接尺寸数据才是正确的图片地址，否则回报404或500 -->
+          <img class="thumbnail" [src]="splitImgUrl(album.coverPath) + '!strip=1&quality=7&magick=webp&op_type=3&columns=290&rows=290'" [alt]="[album.title]">
+          <!-- 接口原来的尺寸大小  官网地址:https://www.ximalaya.com/-->
+          <!-- <img class="thumbnail" [src]="album.coverPath" [alt]="[album.title]"> -->
+          <img class="icon-play" src="../../../assets/images/icon-play-cover.png" />
+          <p class="listen-count">
+            <i class="icon iconfont icon-headset"></i>
+            <span>{{ album.playCount }}万</span>
+          </p>
+        </div>
+        <div class="abstract">
+          <p class="txt title ellipsis">
+            <span *ngIf="album.isFinished === 2" class="tag">完本</span>
+            <span>{{ album.title }}</span>
+          </p>
+          <p class="txt author"><span>{{ album.anchorName }}</span></p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

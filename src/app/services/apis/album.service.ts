@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AlbumArgs, Base, Category, CategoryInfo } from '../type';
+import { AlbumArgs, AlbumsInfo, Base, Category, CategoryInfo } from '../type';
 import { environment } from 'src/environments/environment';
-import { stringify } from 'querystring';
+// import { stringify } from 'querystring';//
+import { stringify } from 'qs';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,21 @@ export class AlbumService {
       .get<Base<CategoryInfo>>(`${this.baseUrl}categories`, { params: args })
       .pipe(map(res => res.data))
   }
+
+  // 专辑列表
+  albums(args: AlbumArgs): Observable<AlbumsInfo> {
+    const person: Test = { age: 0 }
+    stringify(person)
+    const params = new HttpParams({ fromString: stringify(args) })
+    //从querystring引入stringify在这里格式化时会报错，需要重新安装另外的qs库，
+    // 但运行时候项目会有警告，需要在package.son中设置：architect{build:{"allowedCommonJsDependencies": ["qs"]}}
+    return this.http
+      .get<Base<AlbumsInfo>>(`${this.baseUrl}albums`, { params })
+      .pipe(map(res => res.data))
+  }
+}
+
+interface Test {
+  age: number
 }
 

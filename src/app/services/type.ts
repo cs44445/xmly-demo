@@ -50,3 +50,49 @@ export interface CheckedMeta {
   metaId: number,
   metaName: string
 }
+export interface Album {
+  albumId: number;
+  anchorName: string; // 作者名
+  coverPath: string;
+  isFinished: number; // 1 - 连载中  2 - 已完本
+  isPaid: boolean;
+  link: string;
+  playCount: number;  // 播放数
+  title: string;
+  trackCount: number; // 章节数
+  uid: number;
+  vipType: number;
+}
+
+export interface AlbumInfoMeta {
+  metaDataId: number;
+  metaValueId: number;
+  metaDisplayName: string;
+  isSubCategory: boolean;
+}
+
+export interface AlbumsInfo {
+  albums: Album[];
+  page: number,
+  pageSize: number,
+  total: number;
+  pageConfig: { h1title: string }
+}
+export interface AlbumInfo {
+  albumId: number;
+  albumTitle: string;
+  cover: string;
+  detailRichIntro: string;
+  isFinished: number; // 1 - 连载 0 - 完结
+  rate: number;
+  playCount: number;
+  crumbs: {
+    // categoryId: 5
+    categoryPinyin: string;
+    // categoryTitle: "外语"
+    // subcategoryCode: "yingyu"
+    subcategoryDisplayName: string;
+    // subcategoryId: number;
+  };
+  metas: AlbumInfoMeta[];
+}

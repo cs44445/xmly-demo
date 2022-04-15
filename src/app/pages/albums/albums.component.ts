@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, withLatestFrom } from 'rxjs';
+import { combineLatest, forkJoin, withLatestFrom } from 'rxjs';
 import { AlbumService } from 'src/app/services/apis/album.service';
 import { CategoryService } from 'src/app/services/business/category.service';
-import { AlbumArgs, CategoryInfo, CheckedMeta, MetaData, MetaValue, SubCategory } from 'src/app/services/type';
+import { Album, AlbumArgs, AlbumInfo, AlbumsInfo, CategoryInfo, CheckedMeta, MetaData, MetaValue, SubCategory } from 'src/app/services/type';
 @Component({
   selector: 'app-albums',
   templateUrl: './albums.component.html',
@@ -11,6 +11,7 @@ import { AlbumArgs, CategoryInfo, CheckedMeta, MetaData, MetaValue, SubCategory 
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AlbumsComponent implements OnInit {
+  sorts = ["综合排序", '最近更新', '播放最多']
   searchParams: AlbumArgs = {
     category: '',
     subcategory: '',
@@ -21,6 +22,8 @@ export class AlbumsComponent implements OnInit {
   }
   categoryInfo?: CategoryInfo
   checkedMetas: CheckedMeta[] = []
+  albumsInfo?: AlbumsInfo
+  imgUrl = ''
 
   constructor(
     private albumServe: AlbumService,
@@ -66,22 +69,33 @@ export class AlbumsComponent implements OnInit {
         this.searchParams.category = pinyin!
         this.searchParams.subcategory = ''
         this.categoryServe.setSubCategory([])//点击了二级菜单后重新点击一级菜单需要清空二级菜单
-        this.updateDate()
+        this.updateData()
       })
   }
 
-  private updateDate(): void {
-    this.albumServe.detailCategoryPageInfo(this.searchParams).subscribe(res => {
-      this.categoryInfo = res
+  private updateData(): void {
+    forkJoin([
+      this.albumServe.albums(this.searchParams),
+      this.albumServe.detailCategoryPageInfo(this.searchParams)
+    ]).subscribe(([albumsInfo, categoryInfo]) => {
+      this.categoryInfo = categoryInfo
+      this.albumsInfo = albumsInfo
+      console.log(this.albumsInfo, 'albumsInfo');
       this.cdr.markForCheck()
     })
+
+    // this.albumServe.detailCategoryPageInfo(this.searchParams).subscribe(res => {
+    //   this.categoryInfo = res
+    //   this.cdr.markForCheck()
+    // })
   }
 
+  // 改变二级菜单
   changeSubCategory(subcategories?: SubCategory): void {
     if (this.searchParams.subcategory !== subcategories?.code) {
       this.searchParams.subcategory = subcategories?.code || ''
       this.categoryServe.setSubCategory([subcategories!.displayValue])//设置面包屑二级数据
-      this.updateDate()
+      this.updateData()
     }
   }
 
@@ -129,7 +143,27 @@ export class AlbumsComponent implements OnInit {
     return result.slice(0, -1)//删除末尾拼接的_
   }
 
+  changeSort(index: number): void {
+    if (this.searchParams.sort !== index) {
+      this.searchParams.sort = index
+      this.updateAlbums()
+    }
+  }
+
+  private updateAlbums(): void {
+    this.albumServe.albums(this.searchParams).subscribe(albumsInfo => {
+      this.albumsInfo = albumsInfo;
+      this.cdr.markForCheck();
+    });
+    }
+
+  splitImgUrl(url: string) {
+    const imgUrl = url.split('!op_type')
+    return imgUrl[0]
+  }
+
   // 在ngFor中添加travkBy：因为点击事件很平凡，使用trackBy可以优化 https://angular.cn/api/common/NgForOf
   trackBySubcategories(index: number, item: SubCategory): string { return item.code }
   trackByMetas(index: number, item: MetaValue): number { return item.id }
+  trackByAlbums(index: number, item: Album): number { return item.albumId }
 }
