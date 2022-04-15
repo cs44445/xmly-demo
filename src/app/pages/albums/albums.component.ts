@@ -94,6 +94,7 @@ export class AlbumsComponent implements OnInit {
       metaId: metaValue.id,
       metaName: metaValue.displayName
     })
+    this.searchParams.meta = this.getMetaParams()
   }
 
   showMetaRow(name: string) {
@@ -106,18 +107,26 @@ export class AlbumsComponent implements OnInit {
   clearFilter(meta: CheckedMeta | 'clearAll') {
     if (meta === 'clearAll') {
       this.checkedMetas = []
+      this.searchParams.meta = ''
     } else {
       const targetIndex = this.checkedMetas.findIndex(item => {
         return (item.metaRowId === meta.metaRowId) && (item.metaId === meta.metaId)
       })
       if (targetIndex > -1) {
         this.checkedMetas.splice(targetIndex, 1)
-      }   
+        this.searchParams.meta = this.getMetaParams()
+      }
     }
   }
 
-  clearAll() {
-
+  private getMetaParams(): string {
+    let result = ''
+    if (this.checkedMetas.length) {
+      this.checkedMetas.forEach(item => {
+        result += item.metaRowId + '_' + item.metaId + '-'
+      })
+    }
+    return result.slice(0, -1)//删除末尾拼接的_
   }
 
   // 在ngFor中添加travkBy：因为点击事件很平凡，使用trackBy可以优化 https://angular.cn/api/common/NgForOf
