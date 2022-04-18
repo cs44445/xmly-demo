@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { StrTpOutletDirective } from './str-tp-outlet.directive';
-
-
+import { IconDirective } from './icon.directive';
 @NgModule({
   declarations: [
-    StrTpOutletDirective
+    StrTpOutletDirective,
+    IconDirective
   ],
   exports: [
-    StrTpOutletDirective
+    StrTpOutletDirective,
+    IconDirective
   ]
 })
 export class DirectivesModule { }

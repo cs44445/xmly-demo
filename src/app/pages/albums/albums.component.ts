@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, forkJoin, withLatestFrom } from 'rxjs';
+import { IconType } from 'src/app/common/directives/type';
 import { storageKeys } from 'src/app/constance';
 import { AlbumService } from 'src/app/services/apis/album.service';
 import { CategoryService } from 'src/app/services/business/category.service';
@@ -14,6 +15,7 @@ import { Album, AlbumArgs, AlbumInfo, AlbumsInfo, CategoryInfo, CheckedMeta, Met
 })
 export class AlbumsComponent implements OnInit {
   sorts = ["综合排序", '最近更新', '播放最多']
+  // currentIcon: IconType = 'headset'
   searchParams: AlbumArgs = {
     category: '',
     subcategory: '',
