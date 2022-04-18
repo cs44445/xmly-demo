@@ -59,7 +59,8 @@ export class AlbumsComponent implements OnInit {
     // })
 
     // 优化一级导航会发两次请求
-    this.route.paramMap.pipe(withLatestFrom(this.categoryServe.getCategory()))
+    this.route.paramMap
+      .pipe(withLatestFrom(this.categoryServe.getCategory()))
       .subscribe(([paramMap, category]) => {
         const pinyin = paramMap.get('pinyin')
         if (pinyin !== category) {
@@ -69,10 +70,12 @@ export class AlbumsComponent implements OnInit {
         this.searchParams.category = pinyin!
         this.searchParams.subcategory = ''
         this.categoryServe.setSubCategory([])//点击了二级菜单后重新点击一级菜单需要清空二级菜单
+        this.clearFilter('clearAll')//改变一级菜单需要清空meta
         this.updateData()
       })
   }
 
+  // 刷新专辑列表和分类列表
   private updateData(): void {
     forkJoin([
       this.albumServe.albums(this.searchParams),
@@ -95,6 +98,7 @@ export class AlbumsComponent implements OnInit {
     if (this.searchParams.subcategory !== subcategories?.code) {
       this.searchParams.subcategory = subcategories?.code || ''
       this.categoryServe.setSubCategory([subcategories!.displayValue])//设置面包屑二级数据
+      this.clearFilter('clearAll')//改变二级菜单需要清空meta
       this.updateData()
     }
   }
@@ -109,6 +113,7 @@ export class AlbumsComponent implements OnInit {
       metaName: metaValue.displayName
     })
     this.searchParams.meta = this.getMetaParams()
+    this.updateAlbums()
   }
 
   showMetaRow(name: string) {
@@ -131,6 +136,7 @@ export class AlbumsComponent implements OnInit {
         this.searchParams.meta = this.getMetaParams()
       }
     }
+    this.updateAlbums()
   }
 
   private getMetaParams(): string {
@@ -150,12 +156,13 @@ export class AlbumsComponent implements OnInit {
     }
   }
 
+  // 只刷新专辑列表
   private updateAlbums(): void {
     this.albumServe.albums(this.searchParams).subscribe(albumsInfo => {
       this.albumsInfo = albumsInfo;
       this.cdr.markForCheck();
     });
-    }
+  }
 
   splitImgUrl(url: string) {
     const imgUrl = url.split('!op_type')
