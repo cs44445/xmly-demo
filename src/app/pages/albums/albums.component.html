@@ -65,7 +65,14 @@
             <!-- appIcon不写死 用变量替代
             <i [appIcon]="currentIcon" class="icon"></i> -->
 
-            <span>{{ album.playCount }}万</span>
+            <!-- 方法1
+            <span>{{ album.playCount | numberFormat:'亿' : 2}}亿</span> -->
+            <span>{{ album.playCount | numberFormat}}万</span>
+            
+            <!-- 方法2
+            注意：需要有空格否则会报错{ precision : 3}与外面的花括号之间要有空格 -->
+            <!-- <span>{{ album.playCount | numberFormat: { precision : 3} }}亿</span> -->
+            <!-- <span>{{ album.playCount | numberFormat: { unit : '亿'} }}亿</span> -->
           </p>
         </div>
         <div class="abstract">
