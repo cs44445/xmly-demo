@@ -1,8 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, forkJoin, withLatestFrom } from 'rxjs';
+import { storageKeys } from 'src/app/constance';
 import { AlbumService } from 'src/app/services/apis/album.service';
 import { CategoryService } from 'src/app/services/business/category.service';
+import { WindowService } from 'src/app/services/tools/window.service';
 import { Album, AlbumArgs, AlbumInfo, AlbumsInfo, CategoryInfo, CheckedMeta, MetaData, MetaValue, SubCategory } from 'src/app/services/type';
 @Component({
   selector: 'app-albums',
@@ -30,7 +32,8 @@ export class AlbumsComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private categoryServe: CategoryService,
-    private router: Router
+    private router: Router,
+    private windowServe: WindowService
   ) { }
 
   ngOnInit(): void {
@@ -63,30 +66,44 @@ export class AlbumsComponent implements OnInit {
       .pipe(withLatestFrom(this.categoryServe.getCategory()))
       .subscribe(([paramMap, category]) => {
         const pinyin = paramMap.get('pinyin')
+        this.searchParams.category = pinyin!
+        let needSetSatus = false// 在页面刷新的时候需要保存刷新前的筛选条件样式
         if (pinyin !== category) {
           // 分类和路径的参数不同时(eg: 点击后退按钮)以参数为准 
           this.categoryServe.setCategory(pinyin!)
+          this.clearSubCategory()
+          this.clearFilter('clearAll')//改变一级菜单需要清空meta
+        } else {//说明pinyin和categor没有冲突，所以不能无脑清空二级分类和metas,要分情况讨论(如果缓存中存在二级分类和三级分类的参数，就从缓存中读取)
+          const catchSubCategory = this.windowServe.getStorage(storageKeys.subcategoryCode)
+          const catchMetas = this.windowServe.getStorage(storageKeys.metas)
+          // 如果缓存中存在二级分类和三级分类的参数，就从缓存中读取
+          if (catchSubCategory) {
+            needSetSatus = true
+            this.searchParams.subcategory = catchSubCategory
+          }
+          if (catchMetas) {
+            needSetSatus = true
+            this.searchParams.meta = catchMetas
+          }
         }
-        this.searchParams.category = pinyin!
-        this.searchParams.subcategory = ''
-        this.categoryServe.setSubCategory([])//点击了二级菜单后重新点击一级菜单需要清空二级菜单
-        this.clearFilter('clearAll')//改变一级菜单需要清空meta
-        this.updateData()
+        this.updateData(needSetSatus)
       })
   }
 
   // 刷新专辑列表和分类列表
-  private updateData(): void {
+  private updateData(needStatus = false): void {
     forkJoin([
       this.albumServe.albums(this.searchParams),
       this.albumServe.detailCategoryPageInfo(this.searchParams)
     ]).subscribe(([albumsInfo, categoryInfo]) => {
       this.categoryInfo = categoryInfo
       this.albumsInfo = albumsInfo
-      console.log(this.albumsInfo, 'albumsInfo');
+      // console.log(this.albumsInfo, 'albumsInfo');
+      if (needStatus) {
+        this.setSatus(categoryInfo)
+      }
       this.cdr.markForCheck()
     })
-
     // this.albumServe.detailCategoryPageInfo(this.searchParams).subscribe(res => {
     //   this.categoryInfo = res
     //   this.cdr.markForCheck()
@@ -95,12 +112,16 @@ export class AlbumsComponent implements OnInit {
 
   // 改变二级菜单
   changeSubCategory(subcategories?: SubCategory): void {
-    if (this.searchParams.subcategory !== subcategories?.code) {
-      this.searchParams.subcategory = subcategories?.code || ''
-      this.categoryServe.setSubCategory([subcategories!.displayValue])//设置面包屑二级数据
-      this.clearFilter('clearAll')//改变二级菜单需要清空meta
-      this.updateData()
+    // 不能只通过this.searchParams.subcategory = subcategories?.code || ''来判断，需要分情况讨论，否则当点击'全部'时会报错
+    if (subcategories) {
+      this.searchParams.subcategory = subcategories.code
+      this.categoryServe.setSubCategory([subcategories.displayValue])//设置面包屑二级数据
+      this.windowServe.setStorage(storageKeys.subcategoryCode, this.searchParams.subcategory)
+    } else {
+      this.clearSubCategory()
     }
+    this.clearFilter('clearAll')//改变二级菜单需要清空meta
+    this.updateData()
   }
 
   changeMeta(metaData: MetaData, metaValue: MetaValue): void {
@@ -113,6 +134,7 @@ export class AlbumsComponent implements OnInit {
       metaName: metaValue.displayName
     })
     this.searchParams.meta = this.getMetaParams()
+    this.windowServe.setStorage(storageKeys.metas, this.searchParams.meta)
     this.updateAlbums()
   }
 
@@ -127,6 +149,7 @@ export class AlbumsComponent implements OnInit {
     if (meta === 'clearAll') {
       this.checkedMetas = []
       this.searchParams.meta = ''
+      this.windowServe.removeStorage(storageKeys.metas)
     } else {
       const targetIndex = this.checkedMetas.findIndex(item => {
         return (item.metaRowId === meta.metaRowId) && (item.metaId === meta.metaId)
@@ -134,6 +157,7 @@ export class AlbumsComponent implements OnInit {
       if (targetIndex > -1) {
         this.checkedMetas.splice(targetIndex, 1)
         this.searchParams.meta = this.getMetaParams()
+        this.windowServe.setStorage(storageKeys.metas, this.searchParams.meta)
       }
     }
     this.updateAlbums()
@@ -167,6 +191,41 @@ export class AlbumsComponent implements OnInit {
   splitImgUrl(url: string) {
     const imgUrl = url.split('!op_type')
     return imgUrl[0]
+  }
+
+  // 清空服务、缓存中的参数
+  private clearSubCategory(): void {
+    this.searchParams.subcategory = ''
+    this.categoryServe.setSubCategory([])//点击了二级菜单后重新点击一级菜单需要清空二级菜单
+    this.windowServe.removeStorage(storageKeys.subcategoryCode)
+  }
+
+  // 刷新页面筛选条件的UI
+  private setSatus({ metadata, subcategories }: CategoryInfo): void {
+    // console.log(metadata, 'metadata');
+    // console.log(subcategories, 'subcategories');
+    const subCategory = subcategories.find(item => item.code === this.searchParams.subcategory)
+    if (subCategory) {
+      this.categoryServe.setSubCategory([subCategory.displayValue])
+    }
+    // 保存meta
+    if (this.searchParams.meta) {
+      const metaMap = this.searchParams.meta.split('-').map(item => item.split('_'))
+      console.log(metaMap, 'metaMap');
+      metaMap.forEach(meta => {
+        const targetRow = metadata.find(row => row.id === Number(meta[0]))
+        // 从详情导航过来的标签不一定存在
+        const { id: metaRowId, name, metaValues } = targetRow || metadata[0]
+        const targetMeta = metaValues.find(item => item.id === Number(meta[1]))
+        const { id, displayName } = targetMeta || metaValues[0]
+        this.checkedMetas.push({
+          metaRowId,
+          metaRowName: name,
+          metaId: id,
+          metaName: displayName
+        })
+      })
+    }
   }
 
   // 在ngFor中添加travkBy：因为点击事件很平凡，使用trackBy可以优化 https://angular.cn/api/common/NgForOf

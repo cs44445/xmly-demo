@@ -57,7 +57,7 @@ export class AppComponent implements OnInit {
   changeCategory(category: Category): void {
     if ((this.currentCategory && this.currentCategory.id) !== category.id) {
       // this.currentCategory = category;//因为上面已经调用了setCurrentCategory()，所以不需要这行代码了
-      this.categoryServe.setCategory(category.pinyin)//如果发生改变就往服务中设置值
+      // this.categoryServe.setCategory(category.pinyin)//如果发生改变就往服务中设置值 因为需要缓存pinyin值，所以删除这里
       this.router.navigateByUrl(`albums/${category.pinyin}`)
     }
   }
