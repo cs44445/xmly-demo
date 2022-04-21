@@ -27,7 +27,7 @@ export class TagComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit(): void {
   }
   ngAfterViewInit(): void {
-    console.log('after生命周期执行');//等change生命周期执行后才会执行
+    // console.log('after生命周期执行');//等change生命周期执行后才会执行
     // this.setStyle()//所以没有必要在这里初始化，因为this.setStyle()本质只是改变了color的值。而且默认color=''，所以有color就会执行onchanges生命周期，所以直接在onchanges里面调用这个方法即可
   }
   ngOnChanges(changes: SimpleChanges): void {

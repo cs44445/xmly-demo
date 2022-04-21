@@ -28,7 +28,7 @@ export class AlbumsComponent implements OnInit {
   checkedMetas: CheckedMeta[] = []
   albumsInfo?: AlbumsInfo
   imgUrl = ''
-  tagColor = 'magenta'
+  // tagColor = 'magenta'
 
   constructor(
     private albumServe: AlbumService,

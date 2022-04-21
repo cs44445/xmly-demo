@@ -6,6 +6,7 @@ import { AlbumsComponent } from './albums.component';
 import { DirectivesModule } from 'src/app/common/directives/directives.module';
 import { PipesModule } from 'src/app/common/pipes/pipes.module';
 import { TagModule } from 'src/app/components/tag/tag.module';
+import { PaginationModule } from 'src/app/common/pagination/pagination.module';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { TagModule } from 'src/app/components/tag/tag.module';
     AlbumsRoutingModule,
     DirectivesModule,
     PipesModule,
-    TagModule
+    TagModule,
+    PaginationModule
   ]
 })
 export class AlbumsModule { }
