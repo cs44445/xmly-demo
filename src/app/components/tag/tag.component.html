@@ -1,0 +1,4 @@
+<!-- ng-content相当于插槽，给用户传入自定义内容 -->
+<ng-content></ng-content>
+
+<i [appIcon]="'Close'" class="icon-close" *ngIf="xmCloseble" (click)="closed.emit()"></i>

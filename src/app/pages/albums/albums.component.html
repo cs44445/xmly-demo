@@ -1,4 +1,18 @@
 <div class="main-content">
+  <!-- 调试tag组件 -->
+  <!-- <app-tag class="xm-tag xm-tag-magenta">一个关闭标签</app-tag> -->
+  <!-- <app-tag class="xm-tag">一个关闭标签</app-tag> -->
+  <!-- <app-tag class="xm-tag" xmColor="orange">一个关闭标签</app-tag> -->
+
+  <!-- 将颜色设置为变量，因为调试改变颜色会有问题 -->
+  <!-- <app-tag class="xm-tag" [xmColor]="tagColor">一个关闭标签</app-tag> -->
+  <!-- 不传[xmColor]="tagColor"不会执行onChange生命周期 -->
+  <!-- <app-tag class="xm-tag">一个关闭标签</app-tag> -->
+  
+  <!-- 这里是一个变量 xmCloseble -->
+  <!-- <app-tag class="xm-tag" xmShape="circle" [xmCloseble]="true" [xmColor]="tagColor">一个关闭标签</app-tag>
+  <button (click)="tagColor = 'orange' ">点击改变tag颜色</button>
+  <button (click)="tagColor = 'pink' ">用户传入自定义颜色</button> -->
   <div class="categories">
     <ul>
       <li [class.checked]="!searchParams.subcategory" (click)="changeSubCategory()">全部</li>
@@ -24,14 +38,16 @@
     <div class="row checked-conditions" *ngIf="checkedMetas.length">
       <b class="title">已筛选</b>
       <ul class="tabs">
-        <li class="tag" *ngFor="let item of checkedMetas" (click)="clearFilter(item)">
-          <span class="label-title">{{item.metaRowName}}</span> |
-          <span>{{item.metaName}}</span>
+        <li class="tag checked" *ngFor="let item of checkedMetas">
+          <span class="label-title">{{item.metaRowName}}</span>
+          <app-tag [xmCloseble]="true" (closed)="clearFilter(item)">{{item.metaName}}</app-tag>
         </li>
       </ul>
       <a class="clear" (click)="clearFilter('clearAll')">清除全部</a>
     </div>
   </div>
+
+  <!-- 专辑列表 -->
   <div class="albums">
     <div class="album-head">
       <div class="title">
@@ -68,7 +84,7 @@
             <!-- 方法1
             <span>{{ album.playCount | numberFormat:'亿' : 2}}亿</span> -->
             <span>{{ album.playCount | numberFormat}}万</span>
-            
+
             <!-- 方法2
             注意：需要有空格否则会报错{ precision : 3}与外面的花括号之间要有空格 -->
             <!-- <span>{{ album.playCount | numberFormat: { precision : 3} }}亿</span> -->
@@ -79,7 +95,7 @@
           <!-- 点击测试icon指令
           <p class="txt title ellipsis" (click)="currentIcon='Star'"> -->
           <p class="txt title ellipsis">
-            <span *ngIf="album.isFinished === 2" class="tag">完本</span>
+            <app-tag *ngIf="album.isFinished === 2" [xmColor]="'green'" class="tag">完本</app-tag>
             <span>{{ album.title }}</span>
           </p>
           <!-- <p class="txt title ellipsis">
