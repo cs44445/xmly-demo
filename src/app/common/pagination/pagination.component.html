@@ -1,37 +1,20 @@
 <div class="xm-page-wrap">
   <ul class="xm-pages">
-    <li class="xm-page disabled">
-      <i appIcon="previewleft" class="icon"></i>
-    </li>
-    <li class="xm-page checked">
-      <a>1</a>
-    </li>
-    <li class="xm-page">
-      <i appIcon="more" class="icon"></i>
-    </li>
-    <li class="xm-page">
-      <a>4</a>
-    </li>
-    <li class="xm-page">
-      <a>5</a>
-    </li>
-    <li class="xm-page">
-      <a>6</a>
-    </li>
-    <li class="xm-page">
-      <a>7</a>
-    </li>
-    <li class="xm-page">
-      <a>8</a>
-    </li>
-    <li class="xm-page">
-      <i appIcon="more" class="icon"></i>
-    </li>
-    <li class="xm-page">
-      <a>100</a>
-    </li>
-    <li class="xm-page">
-      <i appIcon="previewright" class="icon"></i>
+    <li class="xm-page" *ngFor="let item of listOfPageItems" [class.disabled]="item.disabled"
+      [class.checked]="item.num === pageNum">
+      <ng-container [ngSwitch]="item.type">
+        <!-- 页码标签 -->
+        <a *ngSwitchCase="'page'">{{item.num}}</a>
+
+        <!-- 默认显示左右两个箭头标签 -->
+        <ng-container *ngSwitchDefault>
+          <span [ngSwitch]="item.type">
+            <i *ngSwitchCase="'prev'" appIcon="previewleft" class="icon"></i>
+            <i *ngSwitchCase="'next'" appIcon="previewright" class="icon"></i>
+            <i *ngSwitchDefault appIcon="more" class="icon"></i>
+          </span>
+        </ng-container>
+      </ng-container>
     </li>
   </ul>
   <div class="xm-page-navigate">
@@ -39,4 +22,3 @@
     <button>跳转</button>
   </div>
 </div>
-
