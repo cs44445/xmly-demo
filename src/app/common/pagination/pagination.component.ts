@@ -15,10 +15,11 @@ interface PageItem {
 })
 export class PaginationComponent implements OnInit {
   // 只需要用户传入3个参数就能控制分页组件 可以组件中设定默认值
-  // @Input() total = 0;//总条数 
-  // @Input() total = 100;//总条数 可以先写死来展示样式
-  @Input() total = 90;//情况1 不超过10页时展示所有标签
-  @Input() pageNum = 1;//当前的页数
+  // @Input() total = 0;//总条数
+  // @Input() total = 90;//情况1 不超过10页时展示所有标签
+  @Input() total = 500;//情况2 超过10页时
+  // @Input() pageNum = 1;//当前的页数
+  @Input() pageNum = 46;//当前的页数
   @Input() pageSize = 10;//每页展示多少条数据
   private lastNum = 0;//最后一页的页码
   // private listOfPageItems: PageItem[] = [];
@@ -30,17 +31,36 @@ export class PaginationComponent implements OnInit {
     this.lastNum = Math.ceil(this.total / this.pageSize)
     this.listOfPageItems = this.getListOfPageBtns(this.pageNum, this.lastNum)
     console.log(this.listOfPageItems);//9+2=11个item
-    
-console.log(this.lastNum,'this.lastNum');
-
   }
 
   private getListOfPageBtns(pageNum: number, lastNum: number): PageItem[] {
     // 有几种情况
     // 1.total=90 即总页数<10时，展示所有页数按钮和左右箭头按钮
-    return contactWithPrevNext(generatePage(1, this.lastNum),pageNum,lastNum)
+    if (lastNum <= 9) {
+      return contactWithPrevNext(generatePage(1, lastNum), pageNum, lastNum)
+    } else {
+      // 可以直接确定左、右箭头、第一页和最后一页这4个按钮
+      const firstPageItem = generatePage(1, 1)
+      const lastPageItem = generatePage(lastNum, lastNum)
+      let listOfMidPages = []//中间的page按钮
+      const prevFiveItem = { type: 'prev5' }
+      const nextFiveItem = { type: 'next5' }
+      // 如果页码page<4，就显示1-5页码按钮，从5按钮后出现...按钮一直到最后一页按钮
+      // 即当前页面按钮<4时，显示按钮为:1,2，3,4,5，...，50
+      if (pageNum < 4) {
+        listOfMidPages = [...generatePage(2, 5), nextFiveItem]
+      } else if (pageNum > lastNum - 4) {
+        // 当latName-4: ...,46,47,48,49,50
+        // 需要渲染46-49按钮，50按钮已经存在了
+        listOfMidPages = [prevFiveItem, ...generatePage(lastNum - 4, lastNum - 1)]
+      } else {
+        //从4-46，1，...，中间页码按钮，...，50
+        // 中间页码可以根据当前点击的按钮来显示：即当前点击了15，那么就显示13,14,15,16,17
+        listOfMidPages = [prevFiveItem, ...generatePage(pageNum - 2, pageNum + 2), nextFiveItem]
+      }
+      return contactWithPrevNext([...firstPageItem, ...listOfMidPages, ...lastPageItem], pageNum, lastNum)
+    }
   }
-
 }
 
 // 生成page标签
