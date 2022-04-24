@@ -21,6 +21,6 @@
     <!-- 添加模板引用 #to -->
     <!-- 加号可以把字符串改为number类型，把布尔改为0或者1，可以看做是包了一个Number() -->
     <input type="number" class="xm-input" #to (keyup.enter)="inputValue(+to.value)" [min]="1" [max]="lastNum"/>
-    <button (click)="inputValue(+to.value)">跳转</button>
+    <button (click)="inputValue(+to.value)" class="xm-btn">跳转</button>
   </div>
 </div>

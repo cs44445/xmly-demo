@@ -2,7 +2,7 @@ import { Directive, ElementRef, Host, HostBinding, Input, OnChanges, Renderer2, 
 import { IconType } from './type';
 
 @Directive({
-  selector: '[appIcon]',
+  selector: 'i[appIcon]',//在前面加上i表示限制icon指令只能在i标签上生效
   host: {// 给元素绑定一个class 方法2
     '[class.iconfont]': 'true'//注意：这里的布尔值必须加引号
   }
