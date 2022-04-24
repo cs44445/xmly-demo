@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { HeaderComponent } from './layouts/header/header.component';
@@ -21,7 +22,8 @@ import { PagesModule } from './pages/pages.module';
     CommonModule,
     BreadcrumbModule,
     HttpClientModule,
-    PagesModule
+    PagesModule,
+    BrowserAnimationsModule
   ],
   exports: [//需要导出才能在app.module中正常使用
     BrowserModule,

@@ -1,31 +1,32 @@
-<app-header></app-header>
-<div class="content">
-  <div class="container">
-    <div class="breadcrumb-wrap">
-      <app-breadcrumb>
-        <app-breadcrumb-item>全部分类</app-breadcrumb-item>
-        <app-breadcrumb-item>
-          <div class="sub-category">
-            <div class="handler">
-              <!-- 需要加?变成可选参数，因为请求接口需要时间，但模板早已经渲染好了，所以不加?会报错 -->
-              <span class="current">{{currentCategory?.displayName}}</span>
-              <i class="arrow"></i>
+<div id="xm">
+  <app-header></app-header>
+  <div class="content">
+    <div class="container">
+      <div class="breadcrumb-wrap">
+        <app-breadcrumb>
+          <app-breadcrumb-item>全部分类</app-breadcrumb-item>
+          <app-breadcrumb-item>
+            <div class="sub-category">
+              <div class="handler">
+                <!-- 需要加?变成可选参数，因为请求接口需要时间，但模板早已经渲染好了，所以不加?会报错 -->
+                <span class="current">{{currentCategory?.displayName}}</span>
+                <i class="arrow"></i>
+              </div>
+              <div class="category-box">
+                <ul>
+                  <!-- 点击一级菜单面包屑 -->
+                  <li (click)="changeCategory(item)" [class.checked]="item.id === currentCategory?.id"
+                    *ngFor="let item of categories;">{{item.displayName}}</li>
+                </ul>
+              </div>
             </div>
-            <div class="category-box">
-              <ul>
-                <!-- 点击一级菜单面包屑 -->
-                <li (click)="changeCategory(item)" [class.checked]="item.id === currentCategory?.id"
-                  *ngFor="let item of categories;">{{item.displayName}}</li>
-              </ul>
-            </div>
-          </div>
-        </app-breadcrumb-item>
-        <ng-container *ngIf="subCategory.length">
-          <app-breadcrumb-item *ngFor="let item of subCategory">{{item}}</app-breadcrumb-item>
-        </ng-container>
-      </app-breadcrumb>
+          </app-breadcrumb-item>
+          <ng-container *ngIf="subCategory.length">
+            <app-breadcrumb-item *ngFor="let item of subCategory">{{item}}</app-breadcrumb-item>
+          </ng-container>
+        </app-breadcrumb>
+      </div>
     </div>
   </div>
 </div>
-
 <router-outlet></router-outlet>

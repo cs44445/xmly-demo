@@ -1,4 +1,8 @@
-<header>
+
+<!-- 使用css3实现header动画效果 -->
+<header [class.fix]="fix">
+<!-- 使用angular自带动画模块实现 -->
+<!-- <header [@moveUpMotion]="fix"> -->
   <div class="container">
     <div class="logo">
       <img src="../../../assets/images/logo.jpeg" alt="migu-music" />
@@ -13,4 +17,3 @@
     </div>
   </div>
 </header>
-
