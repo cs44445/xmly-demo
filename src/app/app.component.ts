@@ -55,11 +55,11 @@ export class AppComponent implements OnInit {
 
   // 使得当前的分类变成点击的分类
   changeCategory(category: Category): void {
-    if ((this.currentCategory && this.currentCategory.id) !== category.id) {
-      // this.currentCategory = category;//因为上面已经调用了setCurrentCategory()，所以不需要这行代码了
-      // this.categoryServe.setCategory(category.pinyin)//如果发生改变就往服务中设置值 因为需要缓存pinyin值，所以删除这里
-      this.router.navigateByUrl(`albums/${category.pinyin}`)
-    }
+    // if ((this.currentCategory && this.currentCategory.id) !== category.id) {//在写详情页组件时，需要注释掉这个判断，否则在详情页从音乐菜单点击音乐选项无法返回到列表页，不能进行跳转
+    // this.currentCategory = category;//因为上面已经调用了setCurrentCategory()，所以不需要这行代码了
+    // this.categoryServe.setCategory(category.pinyin)//如果发生改变就往服务中设置值 因为需要缓存pinyin值，所以删除这里
+    this.router.navigateByUrl(`albums/${category.pinyin}`)
+    // }
   }
 
   private setCurrentCategory(): void {

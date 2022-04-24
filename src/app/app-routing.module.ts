@@ -12,6 +12,13 @@ const routes: Routes = [
   //   path: '**',
   //   redirectTo: '/albums/youshengshu'
   // }
+  {
+    path: 'album/:albumId',
+    loadChildren: () => import('./pages/album/album.module').then(m => m.AlbumModule),
+    data: {
+      title: '专辑详情'
+    }
+  }
 ];
 
 @NgModule({

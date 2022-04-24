@@ -83,7 +83,8 @@
 
             <!-- 方法1
             <span>{{ album.playCount | numberFormat:'亿' : 2}}亿</span> -->
-            <span>{{ album.playCount | numberFormat}}万</span>
+            <!-- <span>{{ album.playCount | numberFormat}}万</span> -->
+            <span>{{ album.playCount | numberFormat}}</span>
 
             <!-- 方法2
             注意：需要有空格否则会报错{ precision : 3}与外面的花括号之间要有空格 -->
