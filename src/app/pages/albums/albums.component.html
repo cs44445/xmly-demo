@@ -109,5 +109,11 @@
   </div>
 
   <!-- 分页 -->
-  <app-pagination></app-pagination>
+  <app-pagination
+    class="page"
+    [pageNum]="searchParams.page"
+    [pageSize]="searchParams.perPage"
+    [total]="total"
+    (changed)="changePage($event)">
+  </app-pagination>
 </div>

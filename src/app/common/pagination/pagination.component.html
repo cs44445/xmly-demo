@@ -1,6 +1,6 @@
 <div class="xm-page-wrap">
   <ul class="xm-pages">
-    <li class="xm-page" *ngFor="let item of listOfPageItems" [class.disabled]="item.disabled"
+    <li class="xm-page" *ngFor="let item of listOfPageItems" [class.disabled]="item.disabled" (click)="pageClick(item)"
       [class.checked]="item.num === pageNum">
       <ng-container [ngSwitch]="item.type">
         <!-- 页码标签 -->
@@ -18,7 +18,9 @@
     </li>
   </ul>
   <div class="xm-page-navigate">
-    <input type="number" class="xm-input" />
-    <button>跳转</button>
+    <!-- 添加模板引用 #to -->
+    <!-- 加号可以把字符串改为number类型，把布尔改为0或者1，可以看做是包了一个Number() -->
+    <input type="number" class="xm-input" #to (keyup.enter)="inputValue(+to.value)" [min]="1" [max]="lastNum"/>
+    <button (click)="inputValue(+to.value)">跳转</button>
   </div>
 </div>

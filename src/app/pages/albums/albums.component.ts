@@ -29,6 +29,7 @@ export class AlbumsComponent implements OnInit {
   albumsInfo?: AlbumsInfo
   imgUrl = ''
   // tagColor = 'magenta'
+  total = 0
 
   constructor(
     private albumServe: AlbumService,
@@ -102,6 +103,7 @@ export class AlbumsComponent implements OnInit {
       this.categoryInfo = categoryInfo
       this.albumsInfo = albumsInfo
       // console.log(this.albumsInfo, 'albumsInfo');
+      this.total=this.albumsInfo.total
       if (needStatus) {
         this.setSatus(categoryInfo)
       }
@@ -228,6 +230,13 @@ export class AlbumsComponent implements OnInit {
           metaName: displayName
         })
       })
+    }
+  }
+
+  changePage(newPageNum: number): void {
+    if (this.searchParams.page !== newPageNum) {
+      this.searchParams.page = newPageNum
+      this.updateData()
     }
   }
 

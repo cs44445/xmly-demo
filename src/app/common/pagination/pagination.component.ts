@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { last } from 'lodash';
+import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
+import { clamp } from 'lodash';
 
 type PageItemType = 'page' | 'prev' | 'next' | 'prev5' | 'next5'
 interface PageItem {
@@ -13,24 +13,31 @@ interface PageItem {
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.less']
 })
-export class PaginationComponent implements OnInit {
+
+// 需要监听total，pageNum，pageSize属性，因为这3个属性一旦有一个发生改变，就要重新走一遍getListOfPageBtns方法的逻辑
+export class PaginationComponent implements OnInit, OnChanges {
   // 只需要用户传入3个参数就能控制分页组件 可以组件中设定默认值
-  // @Input() total = 0;//总条数
+  @Input() total = 0;//总条数
   // @Input() total = 90;//情况1 不超过10页时展示所有标签
-  @Input() total = 500;//情况2 超过10页时
-  // @Input() pageNum = 1;//当前的页数
-  @Input() pageNum = 46;//当前的页数
+  // @Input() total = 500;//情况2 超过10页时
+  @Input() pageNum = 1;//当前的页数
+  // @Input() pageNum = 46;//当前的页数
   @Input() pageSize = 10;//每页展示多少条数据
-  private lastNum = 0;//最后一页的页码
+  @Output() changed = new EventEmitter<number>()//注意：是从@angular/core中导入，而不是从stream中导入这个方法，否则会报错 需要加@Output表示从子组件发出去的数据
+  lastNum = 0;//最后一页的页码
   // private listOfPageItems: PageItem[] = [];
   listOfPageItems: PageItem[] = [];
 
   constructor() { }
 
   ngOnInit(): void {
-    this.lastNum = Math.ceil(this.total / this.pageSize)
+
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.lastNum = Math.ceil(this.total / this.pageSize) || 1
     this.listOfPageItems = this.getListOfPageBtns(this.pageNum, this.lastNum)
-    console.log(this.listOfPageItems);//9+2=11个item
+    // console.log(this.listOfPageItems);//9+2=11个item
   }
 
   private getListOfPageBtns(pageNum: number, lastNum: number): PageItem[] {
@@ -59,6 +66,36 @@ export class PaginationComponent implements OnInit {
         listOfMidPages = [prevFiveItem, ...generatePage(pageNum - 2, pageNum + 2), nextFiveItem]
       }
       return contactWithPrevNext([...firstPageItem, ...listOfMidPages, ...lastPageItem], pageNum, lastNum)
+    }
+  }
+
+  // { type, num, disabled }赋值解构
+  pageClick({ type, num, disabled }: PageItem): void {
+    if (!disabled) {
+      let newPageNum = this.pageNum
+      if (type === 'page') {
+        newPageNum = num!
+      } else {
+        const diff: any = {
+          next: 1,
+          prev: -1,
+          prev5: -5,
+          next5: 5
+        }
+        newPageNum += diff[type]
+      }
+      // console.log(newPageNum, 'newPageNum');
+      // lodash中的clamp()方法:返回限制在 lower 和 upper 之间的值,newPageNum：被限制的值
+      this.changed.emit(clamp(newPageNum, 1, this.lastNum))//需要把子组件中变化的值传给父组件
+    }
+  }
+
+  inputValue(num: number): void{
+    if (num > 0) {
+      this.pageClick({
+        type: 'page',
+        num,
+      })
     }
   }
 }
