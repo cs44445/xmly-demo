@@ -96,3 +96,50 @@ export interface AlbumInfo {
   };
   metas: AlbumInfoMeta[];
 }
+
+export interface AnchorAlbum {
+  albumId: number;
+  albumTitle: number;
+  playCount: number;
+  cover: string;
+}
+export interface Anchor {
+  anchorName: string;
+  anchorCover: string;
+  anchorTracksCount: number;
+  anchorAlbumsCount: number;
+  anchorFansCount: number;
+  personalIntroduction: string;
+  anchorAlbumList: AnchorAlbum[];
+}
+export interface Track {
+  trackId: number;
+  index: number;
+  playCount: number;
+  title: string;
+  createDateFormat: string;
+  src?: string;
+  isPaid?: boolean;
+}
+export interface TracksInfo {
+  trackTotalCount: number;
+  tracks: Track[];
+}
+export interface AlbumRes {
+  albumId: number;
+  mainInfo: AlbumInfo;
+  anchorInfo: Anchor;
+  tracksInfo: TracksInfo;
+}
+export interface RelateAlbum {
+  id: number;
+  playCount: number;
+  title: string;
+  coverPath: string;
+}
+export interface AlbumTrackArgs {
+  albumId: string;
+  sort: number;
+  pageNum: number;
+  pageSize: number;
+}

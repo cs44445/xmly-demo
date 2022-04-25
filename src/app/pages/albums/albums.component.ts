@@ -84,6 +84,8 @@ export class AlbumsComponent implements OnInit {
           if (catchSubCategory) {
             needSetSatus = true
             this.searchParams.subcategory = catchSubCategory
+          } else {
+            this.clearSubCategory()//在列表页点击二级菜单音乐后再进入详情页，再次点击音乐返回列表页时，会残留二级菜单，需要清掉
           }
           if (catchMetas) {
             needSetSatus = true

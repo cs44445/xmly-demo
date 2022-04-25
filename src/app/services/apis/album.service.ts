@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AlbumArgs, AlbumsInfo, Base, Category, CategoryInfo } from '../type';
+import { AlbumArgs, AlbumsInfo, Base, Category, CategoryInfo, AlbumRes, RelateAlbum } from '../type';
 import { environment } from 'src/environments/environment';
 // import { stringify } from 'querystring';//
 import { stringify } from 'qs';
@@ -44,6 +44,26 @@ export class AlbumService {
     return this.http
       .get<Base<AlbumsInfo>>(`${this.baseUrl}albums`, { params })
       .pipe(map(res => res.data))
+  }
+
+  // 专辑详情
+  album(albumId: string): Observable<AlbumRes> {
+    const params = new HttpParams().set('albumId', albumId)
+    return this.http.get<Base<AlbumRes>>(`${this.baseUrl}album`, { params })
+      .pipe(map(res => res.data))
+  }
+
+  // 评分
+  albumScore(albumId: string): Observable<number> {
+    return this.http.get<Base<{ albumScore: number }>>(`${this.baseUrl}album-score/${albumId}`)
+      .pipe(map(res => res.data.albumScore || 0))//如果没有分数就默认为0
+  }
+
+  // 相关专辑列表
+  relateAlbums(id: string): Observable<RelateAlbum[]> {
+    const params = new HttpParams().set('id', id)
+    return this.http.get<Base<{ hotWordAlbums: RelateAlbum[] }>>(`${this.baseUrl}album-relate`, { params })
+      .pipe(map(res => res.data.hotWordAlbums))
   }
 }
 
