@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { AlbumService } from 'src/app/services/apis/album.service';
@@ -25,12 +26,15 @@ export class AlbumComponent implements OnInit {
     pageNum: 1,
     pageSize: 30
   }
+  // htmlSnippet = 'Template <script>alert("0wned")</script> <b>Syntax</b>';
+  safeHtml?: SafeHtml
 
   constructor(
     private route: ActivatedRoute,
     private albumServe: AlbumService,
     private categoryServe: CategoryService,//详情页也需要使用面包屑组件
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
@@ -61,6 +65,7 @@ export class AlbumComponent implements OnInit {
       this.total = albumInfo.tracksInfo.trackTotalCount
       this.relateAlbums = relateAlbum.slice(0, 10)//截取前面10条数据
       this.categoryServe.setSubCategory([this.albumInfo.albumTitle]);//在列表页点击二级菜单音乐后再进入详情页，再次点击音乐返回列表页时，会残留二级菜单，需要清掉
+      this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(this.albumInfo.detailRichIntro)
       this.cdr.markForCheck()
     })
   }

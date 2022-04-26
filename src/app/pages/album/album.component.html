@@ -1,4 +1,6 @@
 <div class="album-info" *ngIf="albumInfo">
+  <!-- angular会进行无害化处理,它会移除script元素，但保留安全的内容，比如该片段中的<b>元素。-->
+  <!-- <p class="e2e-inner-html-bound" [innerHTML]="htmlSnippet"></p> -->
   <!-- 左侧主体部分 -->
   <div class="main">
     <div class="info">
@@ -39,7 +41,10 @@
     </div>
     <div class="intro">
       <!-- 这里返回的是html。所以不能使用{{}}来展示 -->
-      <article [innerHTML]="albumInfo.detailRichIntro"></article>
+      <!--直接使用innerHTML会有警告：https://angular.cn/guide/security#xss -->
+      <!-- <article [innerHTML]="albumInfo.detailRichIntro"></article> -->
+      <!-- 解决警告 -->
+      <article [innerHTML]="safeHtml"></article>
       <div class="more-arrow">
         <div class="blur"></div>
         <span>显示全部</span>
