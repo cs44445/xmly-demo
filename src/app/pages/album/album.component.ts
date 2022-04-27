@@ -5,7 +5,12 @@ import { forkJoin } from 'rxjs';
 import { AlbumService } from 'src/app/services/apis/album.service';
 import { CategoryService } from 'src/app/services/business/category.service';
 import { AlbumInfo, AlbumTrackArgs, Anchor, RelateAlbum, Track } from 'src/app/services/type';
-
+import { IconType } from '../../common/directives/type';
+interface MoreState {
+  full: boolean,
+  label: string,
+  icon: IconType
+}
 @Component({
   selector: 'app-album',
   templateUrl: './album.component.html',
@@ -28,6 +33,12 @@ export class AlbumComponent implements OnInit {
   }
   // htmlSnippet = 'Template <script>alert("0wned")</script> <b>Syntax</b>';
   safeHtml?: SafeHtml
+  moreState: MoreState = {
+    full: false,
+    label: '显示全部',
+    icon: 'arrow-down-line'
+  }
+  articleHeight: number = 0
 
   constructor(
     private route: ActivatedRoute,
@@ -38,7 +49,12 @@ export class AlbumComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.trackParams.albumId = this.route.snapshot.paramMap.get('albumId')!
+    // 点击侧边推荐专辑时需要监听路由跳转的参数，路由参数改变后就刷新当前列表
+    this.route.paramMap.subscribe(paraMap => {
+      this.trackParams.albumId = paraMap.get('albumId')!
+      this.initData()
+    })
+    // this.trackParams.albumId = this.route.snapshot.paramMap.get('albumId')! //获取路由参数
     // const id = this.route.snapshot.paramMap.get('albumId')!
     // // console.log(id, 'id');
     // this.albumServe.album(id).subscribe(res => {
@@ -50,6 +66,23 @@ export class AlbumComponent implements OnInit {
     // this.albumServe.relateAlbums(id).subscribe(res => {
     //   console.log(res,'相关专辑');
     // })
+    // console.log(this.articleHeight, 'articleHeight');//真实高度
+  }
+
+  // 点击展开或收起
+  taggleMore(): void {
+    this.moreState.full = !this.moreState.full
+    if (this.moreState.full) {
+      this.moreState.label = '收起'
+      this.moreState.icon = 'arrow-up-line'
+    } else {
+      this.moreState.label = '显示全部'
+      this.moreState.icon = 'arrow-down-line'
+    }
+  }
+
+  // 初始化数据和页面
+  private initData(): void {
     forkJoin([
       this.albumServe.album(this.trackParams.albumId),
       this.albumServe.albumScore(this.trackParams.albumId),

@@ -44,11 +44,16 @@
       <!--直接使用innerHTML会有警告：https://angular.cn/guide/security#xss -->
       <!-- <article [innerHTML]="albumInfo.detailRichIntro"></article> -->
       <!-- 解决警告 -->
-      <article [innerHTML]="safeHtml"></article>
-      <div class="more-arrow">
-        <div class="blur"></div>
-        <span>显示全部</span>
-        <i appIcon="arrow-down-line" class="icon"></i>
+      <!-- <article [style.maxHeight]="moreState.full ? 'unset' : '360px' " [innerHTML]="safeHtml"></article> -->
+      <!-- <article appTaggleMore [style.maxHeight]="moreState.full ? 'unset' : '360px' " [innerHTML]="safeHtml"></article> -->
+      <!-- 设置默认360最大高度 -->
+      <article appTaggleMore="360" [isFull]="moreState.full" (initTrueHeight)="articleHeight=$event"
+        [content]="albumInfo.detailRichIntro" [innerHTML]="safeHtml"></article>
+      <div class="more-arrow" (click)="taggleMore()" *ngIf="articleHeight > 360">
+        <!-- hidden控制是否显示模糊效果 -->
+        <div class="blur" [hidden]="moreState.full"></div>
+        <span>{{ moreState.label }}</span>
+        <i [appIcon]="moreState.icon" class="icon"></i>
       </div>
     </div>
   </div>
@@ -86,7 +91,9 @@
         </div>
         <div class="card-body">
           <div class="albums">
-            <div class="album-item" *ngFor="let item of anchor.anchorAlbumList" [routerLink]="'/album/' + item.albumId">
+            <!-- 直接使用[routerLink]="item.albumId"会跳转失败，需要加../或者/album/，因为是相对路径 -->
+            <!-- <div class="album-item" *ngFor="let item of anchor.anchorAlbumList" [routerLink]="'/album/' + item.albumId"> -->
+            <div class="album-item" *ngFor="let item of anchor.anchorAlbumList" [routerLink]="'../' + item.albumId">
               <div class="thumbnail">
                 <img [src]="item.cover" [alt]="item.albumTitle">
               </div>
