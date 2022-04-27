@@ -22,7 +22,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    scrollPositionRestoration: 'enabled'//当向后导航时，滚动到以前的滚动位置。当向前导航时滚动位置设置为 [0, 0]，未来该选项是默认值
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

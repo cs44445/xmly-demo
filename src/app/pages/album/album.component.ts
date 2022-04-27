@@ -97,7 +97,13 @@ export class AlbumComponent implements OnInit {
       this.tracks = albumInfo.tracksInfo.tracks
       this.total = albumInfo.tracksInfo.trackTotalCount
       this.relateAlbums = relateAlbum.slice(0, 10)//截取前面10条数据
-      this.categoryServe.setSubCategory([this.albumInfo.albumTitle]);//在列表页点击二级菜单音乐后再进入详情页，再次点击音乐返回列表页时，会残留二级菜单，需要清掉
+      // this.categoryServe.setSubCategory([this.albumInfo.albumTitle]);//在列表页点击二级菜单音乐后再进入详情页，再次点击音乐返回列表页时，会残留二级菜单，需要清掉
+      this.categoryServe.getCategory().subscribe(category => {//随便在导航栏输入一串数字后会重定向到有声书，这时向后导航时面包屑匹配是错的
+        const { categoryPinyin } = this.albumInfo!.crumbs
+        if (category!==categoryPinyin) {//如果不相等，就设置相等
+          this.categoryServe.setSubCategory([categoryPinyin])
+        }
+      })
       this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(this.albumInfo.detailRichIntro)
       this.cdr.markForCheck()
     })
